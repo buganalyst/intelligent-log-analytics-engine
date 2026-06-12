@@ -1,5 +1,9 @@
 # Intelligent Log Analytics and Threat Detection Engine
 
+<p align="center">
+  <img src="images/dashboard.png" />
+</p>
+
 ## Overview
 
 The Intelligent Log Analytics and Threat Detection Engine is a Java-based cybersecurity monitoring platform designed to collect, process, analyze, and visualize application logs in real time.
@@ -167,48 +171,9 @@ Note: Results vary depending on workload, deployment architecture, threat volume
 
 # System Architecture
 
-```text
-                    USERS
-                       |
-                       v
-         +--------------------------+
-         |  SPRING BOOT APPLICATION |
-         +--------------------------+
-                       |
-                Generates Logs
-                       |
-                       v
-         +--------------------------+
-         |   LOG COLLECTION ENGINE  |
-         +--------------------------+
-                       |
-                       v
-         +--------------------------+
-         |     LOG PARSER ENGINE    |
-         +--------------------------+
-                       |
-              Extract Structured Data
-                       |
-                       v
-         +--------------------------+
-         | THREAT DETECTION ENGINE  |
-         +--------------------------+
-                       |
-            +----------+----------+
-            |                     |
-            v                     v
-     SECURITY ALERTS        DATABASE
-            |                     |
-            +----------+----------+
-                       |
-                       v
-         +--------------------------+
-         | ANALYTICS DASHBOARD      |
-         +--------------------------+
-                       |
-                       v
-              SECURITY ANALYST
-```
+<p align="center">
+  <img src="images/hld.png" />
+</p>
 
 
 # How the System Works
