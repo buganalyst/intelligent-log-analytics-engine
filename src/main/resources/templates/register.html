@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - LogShield</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="auth-page">
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <span class="nav-icon">🛡️</span>
+            <span class="nav-title">LogShield</span>
+        </a>
+        <div class="nav-links">
+            <a href="/login" class="btn btn-outline">Login</a>
+        </div>
+    </nav>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-icon">✨</div>
+                <h1>Create Account</h1>
+                <p>Join LogShield and start generating logs</p>
+            </div>
+
+            <div id="alertBox" class="alert hidden"></div>
+
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Choose a username" required minlength="3">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a password" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full" id="registerBtn">
+                    Create Account
+                </button>
+            </form>
+
+            <p class="auth-link">Already have an account? <a href="/login">Sign in here</a></p>
+            <p class="auth-link"><a href="/">← Back to Home</a></p>
+        </div>
+
+        <div class="auth-info">
+            <h3>📊 What Gets Logged</h3>
+            <p>Registration generates AUTH log entries captured by the collection engine and stored in the database for analysis.</p>
+            <div class="log-preview">
+                <code>
+                    Type: AUTH<br>
+                    Action: REGISTER_SUCCESS<br>
+                    IP: &lt;your-ip&gt;<br>
+                    Status: SUCCESS<br>
+                    → Detection Engine ✓
+                </code>
+            </div>
+            <div class="info-note">
+                <strong>Note:</strong> Duplicate username attempts generate REGISTER_FAILED logs to simulate unauthorized access patterns.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('registerBtn');
+            const alert = document.getElementById('alertBox');
+
+            btn.disabled = true;
+            btn.textContent = 'Creating account...';
+
+            const data = {
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            };
+
+            try {
+                const res = await fetch('/svc/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+
+                if (result.success) {
+                    alert.className = 'alert alert-success';
+                    alert.textContent = '✅ Account created successfully! Redirecting to login...';
+                    alert.classList.remove('hidden');
+                    setTimeout(() => window.location.href = '/login', 1500);
+                } else {
+                    alert.className = 'alert alert-error';
+                    alert.textContent = '❌ ' + result.message;
+                    alert.classList.remove('hidden');
+                    btn.disabled = false;
+                    btn.textContent = 'Create Account';
+                }
+            } catch (err) {
+                alert.className = 'alert alert-error';
+                alert.textContent = '❌ Connection error. Please try again.';
+                alert.classList.remove('hidden');
+                btn.disabled = false;
+                btn.textContent = 'Create Account';
+            }
+        });
+    </script>
+</body>
+</html>

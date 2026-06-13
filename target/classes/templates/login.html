@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - LogShield</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="auth-page">
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <span class="nav-icon">🛡️</span>
+            <span class="nav-title">LogShield</span>
+        </a>
+        <div class="nav-links">
+            <a href="/register" class="btn btn-primary">Register</a>
+        </div>
+    </nav>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-icon">🔐</div>
+                <h1>Welcome Back</h1>
+                <p>Sign in to your LogShield account</p>
+            </div>
+
+            <div id="alertBox" class="alert hidden"></div>
+
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full" id="loginBtn">
+                    <span>Sign In</span>
+                </button>
+            </form>
+
+            <div class="auth-divider">
+                <span>Demo Accounts</span>
+            </div>
+
+            <div class="demo-accounts">
+                <div class="demo-account" onclick="fillDemo('alice','password123')">
+                    <span class="demo-icon">👤</span>
+                    <div>
+                        <div class="demo-name">alice / password123</div>
+                        <div class="demo-role">Regular User</div>
+                    </div>
+                </div>
+                <div class="demo-account" onclick="fillDemo('admin','admin123')">
+                    <span class="demo-icon">👑</span>
+                    <div>
+                        <div class="demo-name">admin / admin123</div>
+                        <div class="demo-role">Administrator</div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="auth-link">Don't have an account? <a href="/register">Register here</a></p>
+            <p class="auth-link"><a href="/">← Back to Home</a></p>
+        </div>
+
+        <div class="auth-info">
+            <h3>🔍 Log Generation</h3>
+            <p>Every login attempt (success or failure) generates a structured AUTH log entry that is analyzed by the Threat Detection Engine in real time.</p>
+            <div class="log-preview">
+                <code>
+                    Type: AUTH<br>
+                    Action: LOGIN_FAILED<br>
+                    IP: 192.168.1.1<br>
+                    Status: FAILED<br>
+                    → Brute Force Check ✓
+                </code>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function fillDemo(user, pass) {
+            document.getElementById('username').value = user;
+            document.getElementById('password').value = pass;
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            const alert = document.getElementById('alertBox');
+
+            btn.disabled = true;
+            btn.textContent = 'Signing in...';
+
+            const data = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value
+            };
+
+            try {
+                const res = await fetch('/svc/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+
+                if (result.success) {
+                    alert.className = 'alert alert-success';
+                    alert.textContent = '✅ ' + result.message + ' — Redirecting...';
+                    alert.classList.remove('hidden');
+                    setTimeout(() => {
+                        if (result.data && result.data.role === 'ADMIN') {
+                            window.location.href = '/admin';
+                        } else {
+                            window.location.href = '/dashboard';
+                        }
+                    }, 1000);
+                } else {
+                    alert.className = 'alert alert-error';
+                    alert.textContent = '❌ ' + result.message;
+                    alert.classList.remove('hidden');
+                    btn.disabled = false;
+                    btn.textContent = 'Sign In';
+                }
+            } catch (err) {
+                alert.className = 'alert alert-error';
+                alert.textContent = '❌ Connection error. Please try again.';
+                alert.classList.remove('hidden');
+                btn.disabled = false;
+                btn.textContent = 'Sign In';
+            }
+        });
+    </script>
+</body>
+</html>

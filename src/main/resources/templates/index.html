@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogShield - Intelligent Log Analytics</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="nav-icon">🛡️</span>
+            <span class="nav-title">LogShield</span>
+        </div>
+        <div class="nav-links">
+            <a href="/login" class="btn btn-outline">Login</a>
+            <a href="/register" class="btn btn-primary">Get Started</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">Phase 2 - Core Implementation</div>
+            <h1 class="hero-title">Intelligent Log Analytics<br><span class="gradient-text">& Threat Detection Engine</span></h1>
+            <p class="hero-subtitle">A Java Spring Boot powered system that collects, parses, and analyzes application logs in real-time to detect cybersecurity threats using rule-based pattern matching.</p>
+            <div class="hero-actions">
+                <a href="/register" class="btn btn-primary btn-lg">Create Account</a>
+                <a href="/admin" class="btn btn-outline btn-lg">Admin Dashboard</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-value" id="totalLogs">0</span>
+                    <span class="stat-label">Logs Captured</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="activeAlerts">0</span>
+                    <span class="stat-label">Active Threats</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">5</span>
+                    <span class="stat-label">Detection Rules</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                    <span class="terminal-title">ThreatDetectionEngine.java</span>
+                </div>
+                <div class="terminal-body" id="liveLogFeed">
+                    <div class="log-line info">[INFO] Detection Engine initialized</div>
+                    <div class="log-line info">[INFO] Loading 5 threat detection rules</div>
+                    <div class="log-line success">[OK] Brute Force detector — ACTIVE</div>
+                    <div class="log-line success">[OK] SQL Injection detector — ACTIVE</div>
+                    <div class="log-line success">[OK] XSS detector — ACTIVE</div>
+                    <div class="log-line success">[OK] Path Traversal detector — ACTIVE</div>
+                    <div class="log-line success">[OK] DDoS/Rate Limit detector — ACTIVE</div>
+                    <div class="log-line info">[INFO] Waiting for events...</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">System Components</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3>Log Collection</h3>
+                    <p>Intercepts all HTTP requests and user actions. Captures IP address, timestamp, username, endpoint, response code, and user-agent for every event.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Log Parser</h3>
+                    <p>Java regex-based parser extracts and structures log data. Identifies log types: AUTH, ACTIVITY, SYSTEM and classifies them into the database.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚠️</div>
+                    <h3>Threat Detection</h3>
+                    <p>Rule-based engine detects Brute Force, SQL Injection, XSS, Path Traversal, and DDoS patterns using threshold analysis and regex matching.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🗄️</div>
+                    <h3>Data Storage</h3>
+                    <p>All logs and alerts stored in H2 database via Spring Data JPA. Structured schema with indexed queries for fast analytics retrieval.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Admin Dashboard</h3>
+                    <p>Real-time dashboard showing log distribution, threat alerts with severity levels, top suspicious IPs, and system health metrics.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧪</div>
+                    <h3>Attack Simulator</h3>
+                    <p>Built-in attack simulation tool to trigger Brute Force, SQL Injection, XSS, and Path Traversal scenarios for testing the detection engine.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tech-stack">
+        <div class="container">
+            <h2 class="section-title">Technology Stack</h2>
+            <div class="tech-grid">
+                <div class="tech-badge">Java 17</div>
+                <div class="tech-badge">Spring Boot 3.2</div>
+                <div class="tech-badge">Spring Data JPA</div>
+                <div class="tech-badge">Spring Security</div>
+                <div class="tech-badge">H2 Database</div>
+                <div class="tech-badge">Thymeleaf</div>
+                <div class="tech-badge">Maven</div>
+                <div class="tech-badge">Regex Pattern Engine</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>Intelligent Log Analytics and Threat Detection Engine &mdash; BTech CSE 4th Sem PBL Project &mdash; Phase 2</p>
+    </footer>
+
+    <script>
+        async function loadStats() {
+            try {
+                const [statsRes, threatsRes] = await Promise.all([
+                    fetch('/svc/dashboard/stats'),
+                    fetch('/svc/dashboard/threats')
+                ]);
+                const stats = await statsRes.json();
+                const threats = await threatsRes.json();
+
+                if (stats.data) {
+                    document.getElementById('totalLogs').textContent = stats.data.totalLogs || 0;
+                }
+                if (threats.data) {
+                    document.getElementById('activeAlerts').textContent = threats.data.activeAlerts || 0;
+                }
+            } catch (e) {}
+        }
+
+        loadStats();
+        setInterval(loadStats, 5000);
+
+        const logLines = [
+            { type: 'info', text: '[AUTH] Login attempt from 192.168.1.45' },
+            { type: 'success', text: '[AUTH] User alice logged in successfully' },
+            { type: 'warning', text: '[DETECT] 3 failed logins from 10.0.0.1' },
+            { type: 'error', text: '[ALERT] Brute force detected! IP: 10.0.0.1' },
+            { type: 'info', text: '[ACTIVITY] Search: "java spring boot tutorial"' },
+            { type: 'warning', text: "[DETECT] SQL pattern found in query param" },
+            { type: 'error', text: '[ALERT] SQL Injection attempt blocked!' },
+            { type: 'info', text: '[ACTIVITY] File download: report.pdf' },
+            { type: 'success', text: '[AUTH] New user registered: user_7829' },
+            { type: 'info', text: '[ACTIVITY] Page visit: /dashboard' },
+        ];
+        let lineIndex = 0;
+        const feed = document.getElementById('liveLogFeed');
+        setInterval(() => {
+            const log = logLines[lineIndex % logLines.length];
+            const div = document.createElement('div');
+            div.className = 'log-line ' + log.type;
+            div.textContent = log.text;
+            feed.appendChild(div);
+            if (feed.children.length > 12) feed.removeChild(feed.firstChild);
+            feed.scrollTop = feed.scrollHeight;
+            lineIndex++;
+        }, 1800);
+    </script>
+</body>
+</html>

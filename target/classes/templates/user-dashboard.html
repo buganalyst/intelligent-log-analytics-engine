@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard - LogShield</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <span class="nav-icon">🛡️</span>
+            <span class="nav-title">LogShield</span>
+        </a>
+        <div class="nav-links">
+            <span id="welcomeUser" class="nav-user"></span>
+            <a href="/admin" class="btn btn-outline" style="font-size:0.8rem;">Admin View</a>
+            <button onclick="logout()" class="btn btn-outline">Logout</button>
+        </div>
+    </nav>
+
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <h3 class="sidebar-title">Activity Panel</h3>
+            <nav class="sidebar-nav">
+                <a href="#" class="sidebar-link active" onclick="showPanel('search')">🔍 Search</a>
+                <a href="#" class="sidebar-link" onclick="showPanel('form')">📝 Submit Form</a>
+                <a href="#" class="sidebar-link" onclick="showPanel('download')">📥 File Download</a>
+                <a href="#" class="sidebar-link" onclick="showPanel('simulate')">⚡ Simulate Attack</a>
+                <a href="#" class="sidebar-link" onclick="showPanel('logs')">📋 My Logs</a>
+            </nav>
+            <div class="sidebar-info">
+                <p>Every action you take generates a structured log entry analyzed by the Threat Detection Engine.</p>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div id="panel-search" class="panel active">
+                <div class="panel-header">
+                    <h2>🔍 Search Activity</h2>
+                    <p>This generates an ACTIVITY log entry analyzed for SQL injection patterns.</p>
+                </div>
+                <div class="activity-card">
+                    <div class="form-group">
+                        <label>Search Query</label>
+                        <input type="text" id="searchQuery" placeholder="Search for anything..." class="form-input">
+                    </div>
+                    <button onclick="doSearch()" class="btn btn-primary">Search &amp; Log</button>
+                    <div id="searchResult" class="result-box hidden"></div>
+                </div>
+                <div class="log-note">
+                    <strong>Try SQL injection:</strong> <code>' OR 1=1; DROP TABLE users; --</code>
+                </div>
+            </div>
+
+            <div id="panel-form" class="panel">
+                <div class="panel-header">
+                    <h2>📝 Submit a Form</h2>
+                    <p>Simulates a contact/data form submission. Generates ACTIVITY log with form data.</p>
+                </div>
+                <div class="activity-card">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="formName" placeholder="Enter your name" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea id="formMessage" placeholder="Enter a message..." class="form-input" rows="3"></textarea>
+                    </div>
+                    <button onclick="submitForm()" class="btn btn-primary">Submit &amp; Log</button>
+                    <div id="formResult" class="result-box hidden"></div>
+                </div>
+                <div class="log-note">
+                    <strong>Try XSS:</strong> <code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code>
+                </div>
+            </div>
+
+            <div id="panel-download" class="panel">
+                <div class="panel-header">
+                    <h2>📥 File Download</h2>
+                    <p>Simulates file access requests. Generates ACTIVITY log entries.</p>
+                </div>
+                <div class="activity-card">
+                    <div class="file-list">
+                        <div class="file-item" onclick="downloadFile('report_2024.pdf')">
+                            <span class="file-icon">📄</span>
+                            <div>
+                                <div class="file-name">report_2024.pdf</div>
+                                <div class="file-size">2.4 MB</div>
+                            </div>
+                            <button class="btn btn-sm btn-outline">Download</button>
+                        </div>
+                        <div class="file-item" onclick="downloadFile('data_export.csv')">
+                            <span class="file-icon">📊</span>
+                            <div>
+                                <div class="file-name">data_export.csv</div>
+                                <div class="file-size">856 KB</div>
+                            </div>
+                            <button class="btn btn-sm btn-outline">Download</button>
+                        </div>
+                        <div class="file-item" onclick="downloadFile('../../etc/passwd')">
+                            <span class="file-icon">⚠️</span>
+                            <div>
+                                <div class="file-name">../../etc/passwd (Path Traversal Test)</div>
+                                <div class="file-size">Suspicious</div>
+                            </div>
+                            <button class="btn btn-sm btn-danger">Download</button>
+                        </div>
+                    </div>
+                    <div id="downloadResult" class="result-box hidden"></div>
+                </div>
+            </div>
+
+            <div id="panel-simulate" class="panel">
+                <div class="panel-header">
+                    <h2>⚡ Attack Simulator</h2>
+                    <p>Trigger simulated attacks to test the Threat Detection Engine. Check the Admin Dashboard after each simulation.</p>
+                </div>
+                <div class="attack-grid">
+                    <div class="attack-card" onclick="simulateAttack('BRUTE_FORCE')">
+                        <div class="attack-icon">🔨</div>
+                        <h3>Brute Force</h3>
+                        <p>Sends 7 rapid failed login attempts to trigger the brute force detection rule (threshold: 5 in 5 min).</p>
+                        <span class="severity-badge high">HIGH</span>
+                    </div>
+                    <div class="attack-card" onclick="simulateAttack('SQL_INJECTION')">
+                        <div class="attack-icon">💉</div>
+                        <h3>SQL Injection</h3>
+                        <p>Injects a malicious SQL payload: <code>OR 1=1; DROP TABLE</code> into a search query to trigger the regex detector.</p>
+                        <span class="severity-badge critical">CRITICAL</span>
+                    </div>
+                    <div class="attack-card" onclick="simulateAttack('XSS')">
+                        <div class="attack-icon">📜</div>
+                        <h3>XSS Attack</h3>
+                        <p>Submits a <code>&lt;script&gt;alert()&lt;/script&gt;</code> payload to trigger the Cross-Site Scripting detection rule.</p>
+                        <span class="severity-badge high">HIGH</span>
+                    </div>
+                    <div class="attack-card" onclick="simulateAttack('PATH_TRAVERSAL')">
+                        <div class="attack-icon">📂</div>
+                        <h3>Path Traversal</h3>
+                        <p>Attempts to access <code>../../etc/passwd</code> to trigger directory traversal detection.</p>
+                        <span class="severity-badge high">HIGH</span>
+                    </div>
+                </div>
+                <div id="simulateResult" class="result-box hidden"></div>
+            </div>
+
+            <div id="panel-logs" class="panel">
+                <div class="panel-header">
+                    <h2>📋 Recent System Logs</h2>
+                    <button onclick="loadLogs()" class="btn btn-sm btn-outline">↻ Refresh</button>
+                </div>
+                <div id="logsTable" class="logs-container">
+                    <p class="loading-text">Loading logs...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/user-dashboard.js"></script>
+</body>
+</html>

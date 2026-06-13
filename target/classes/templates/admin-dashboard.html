@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - LogShield</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <nav class="navbar admin-nav">
+        <a href="/" class="nav-brand">
+            <span class="nav-icon">🛡️</span>
+            <span class="nav-title">Admin Dashboard</span>
+        </a>
+        <div class="nav-center">
+            <span class="live-indicator">● LIVE</span>
+            <span id="lastUpdated" class="last-updated">Connecting...</span>
+        </div>
+        <div class="nav-links">
+            <a href="/dashboard" class="btn btn-outline btn-sm">User View</a>
+            <a href="/" class="btn btn-outline btn-sm">Home</a>
+        </div>
+    </nav>
+
+    <div class="admin-layout">
+        <div class="admin-stats-row">
+            <div class="stat-card total">
+                <div class="stat-icon">📋</div>
+                <div class="stat-info">
+                    <div class="stat-number" id="totalLogs">—</div>
+                    <div class="stat-label">Total Logs</div>
+                </div>
+            </div>
+            <div class="stat-card danger">
+                <div class="stat-icon">🚨</div>
+                <div class="stat-info">
+                    <div class="stat-number" id="activeAlerts">—</div>
+                    <div class="stat-label">Active Threats</div>
+                </div>
+            </div>
+            <div class="stat-card critical">
+                <div class="stat-icon">🔴</div>
+                <div class="stat-info">
+                    <div class="stat-number" id="criticalAlerts">—</div>
+                    <div class="stat-label">Critical Alerts</div>
+                </div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-icon">⚠️</div>
+                <div class="stat-info">
+                    <div class="stat-number" id="logsLastHour">—</div>
+                    <div class="stat-label">Logs Last Hour</div>
+                </div>
+            </div>
+            <div class="stat-card success">
+                <div class="stat-icon">🌐</div>
+                <div class="stat-info">
+                    <div class="stat-number" id="logsLastDay">—</div>
+                    <div class="stat-label">Logs Last 24h</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-grid">
+            <div class="admin-card full-width">
+                <div class="card-header">
+                    <h2>🚨 Threat Alerts</h2>
+                    <div class="filter-group">
+                        <button class="filter-btn active" onclick="loadAlerts('all')">All</button>
+                        <button class="filter-btn" onclick="loadAlerts('active')">Active</button>
+                        <button class="filter-btn" onclick="loadAlerts('critical')">Critical</button>
+                        <button class="filter-btn" onclick="loadAlerts('high')">High</button>
+                    </div>
+                </div>
+                <div id="alertsContainer" class="alerts-container">
+                    <p class="loading-text">Loading alerts...</p>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <div class="card-header">
+                    <h2>📊 Log Distribution</h2>
+                </div>
+                <div id="logTypeChart" class="chart-container">
+                    <p class="loading-text">Loading stats...</p>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <div class="card-header">
+                    <h2>⚡ Threat Types</h2>
+                </div>
+                <div id="threatTypeChart" class="chart-container">
+                    <p class="loading-text">Loading threats...</p>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <div class="card-header">
+                    <h2>🌐 Top Source IPs</h2>
+                </div>
+                <div id="topIpsContainer" class="ips-container">
+                    <p class="loading-text">Loading IPs...</p>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <div class="card-header">
+                    <h2>📈 System Status</h2>
+                </div>
+                <div id="systemStatus" class="status-container">
+                    <div class="status-item">
+                        <span class="status-label">Detection Engine</span>
+                        <span class="status-badge online">ONLINE</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Log Collector</span>
+                        <span class="status-badge online">ONLINE</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Database</span>
+                        <span class="status-badge online">ONLINE</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Brute Force Rule</span>
+                        <span class="status-badge active">ACTIVE</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">SQL Injection Rule</span>
+                        <span class="status-badge active">ACTIVE</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">XSS Rule</span>
+                        <span class="status-badge active">ACTIVE</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Path Traversal Rule</span>
+                        <span class="status-badge active">ACTIVE</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">DDoS/Rate Limit Rule</span>
+                        <span class="status-badge active">ACTIVE</span>
+                    </div>
+                    <div class="status-item failed-logins-row">
+                        <span class="status-label">Failed Logins (1h)</span>
+                        <span id="failedLogins" class="status-badge warning">—</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-card">
+            <div class="card-header">
+                <h2>📋 Live Log Feed</h2>
+                <div class="filter-group">
+                    <button class="filter-btn active" onclick="loadLogs('all')">All</button>
+                    <button class="filter-btn" onclick="loadLogs('AUTH')">Auth</button>
+                    <button class="filter-btn" onclick="loadLogs('ACTIVITY')">Activity</button>
+                    <button class="filter-btn" onclick="loadLogs('SYSTEM')">System</button>
+                </div>
+            </div>
+            <div id="logsContainer" class="logs-table-container">
+                <p class="loading-text">Loading logs...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/admin-dashboard.js"></script>
+</body>
+</html>
