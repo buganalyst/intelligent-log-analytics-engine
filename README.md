@@ -10,7 +10,7 @@ The Intelligent Log Analytics and Threat Detection Engine is a Java-based cybers
 
 The system simulates the core functionality of enterprise SIEM (Security Information and Event Management) solutions by continuously monitoring user activities, processing application logs, identifying suspicious behavior, generating alerts, and presenting security insights through an interactive dashboard.
 
-Built using Spring Boot, Log4j2, JPA, Hibernate, MySQL, and modern web technologies, the platform demonstrates practical implementation of cybersecurity monitoring, threat intelligence, log analytics, and security operations concepts.
+Built using Spring Boot, Log4j2, JPA, Hibernate, H2 database, and modern web technologies, the platform demonstrates practical implementation of cybersecurity monitoring, threat intelligence, log analytics, and security operations concepts.
 
 
 # Problem Statement
@@ -263,7 +263,7 @@ Tracks repeated unauthorized access attempts.
 
 ## Database
 
-* MySQL
+* H2 
 * Spring Data JPA
 * Hibernate ORM
 
