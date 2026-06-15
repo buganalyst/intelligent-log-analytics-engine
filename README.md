@@ -219,6 +219,57 @@ Logs and alerts are stored in the database.
 
 The Dashboard visualizes logs, threats, and analytics in real time.
 
+# Project Structure
+
+```text
+├── images
+|   ├── dashboard.png                               # Project dashboard image
+|   ├── hld.png                                     # System Design
+├── src/main/java/com/loganalytics/
+│   ├── LogAnalyticsApplication.java                # Spring Boot entry point
+│   ├── model/
+│   │   ├── LogEntry.java                           # Log record entity
+│   │   ├── ThreatAlert.java                        # Threat alert entity
+│   │   └── AppUser.java                            # User entity
+│   ├── repository/
+│   │   ├── LogEntryRepository.java                 # JPA repo for logs
+│   │   ├── ThreatAlertRepository.java              # JPA repo for alerts
+│   │   └── AppUserRepository.java                  # JPA repo for users
+│   ├── service/
+│   │   ├── LogService.java                         # Log CRUD + analytics
+│   │   ├── ThreatAlertService.java                 # Alert management
+│   │   └── UserService.java                        # User auth logic
+│   ├── engine/
+│   │   └── ThreatDetectionEngine.java              # Core detection rules
+│   ├── controller/
+│   │   ├── AuthController.java                     # Login/Register/Logout API
+│   │   ├── ActivityController.java                 # User activity + attack sim
+│   │   ├── DashboardController.java                # Admin dashboard API
+│   │   └── PageController.java                     # HTML page routing
+│   ├── dto/
+│   │   ├── LoginRequest.java
+│   │   ├── RegisterRequest.java
+│   │   └── ApiResponse.java
+│   └── config/
+│       ├── SecurityConfig.java                     # Spring Security config
+│       └── DataInitializer.java                    # Seed demo users
+├── src/main/resources/
+│   ├── application.properties                      # App configuration
+│   ├── templates/                                  # Thymeleaf HTML pages
+│   │   ├── index.html                              # Landing page
+│   │   ├── login.html                              # Login page
+│   │   ├── register.html                           # Registration page
+│   │   ├── user-dashboard.html                     # User activity panel
+│   │   └── admin-dashboard.html                    # Admin log viewer
+│   └── static/
+│       ├── css/main.css                            # Global styles
+│       ├── css/admin.css                           # Admin dashboard styles
+│       ├── js/user-dashboard.js                    # User panel logic
+│       └── js/admin-dashboard.js                   # Admin panel logic
+├── LICENSE                                         # Project License
+├── README.md                                       # Readme file
+├── pom.xml                                         # Maven dependencies
+```
 
 # Threat Detection Rules
 
